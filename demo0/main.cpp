@@ -26,6 +26,8 @@ int main(int argc, char *argv[]) {
   std::cout << "B, G, R pixel equals " 
       << (int)tmp_pixel[0] << ", " << (int)tmp_pixel[1] << ", " << (int)tmp_pixel[2] << std::endl;
 
+  cv::imwrite("./out.jpg", gray_img);
+
   cv::imshow("Lena BGR", color_img);
   cv::imshow("Lena GRAY", gray_img);
   cv::waitKey(0);
