@@ -53,6 +53,8 @@ int main(int argc, char *argv[]) {
   cv::setMouseCallback(DEMO_NAME, on_mouse, &color_img);
   on_change(blur_amount, &color_img);
   cv::imshow(DEMO_NAME, color_img);
+  // Using qt gui
+  //cv::displayOverlay(DEMO_NAME, "Overlay 5secs", 5000);
   cv::waitKey(0);
   cv::destroyWindow(DEMO_NAME);
 
