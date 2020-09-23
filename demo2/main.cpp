@@ -60,7 +60,7 @@ void sobel_callback(int state, void* input_data) {
 
 int main(int argc, char *argv[]) {
   int32_t blur_amount = 15;
-  std::string target_img_path = "../../demo_imgs/demo_img0.jpg";
+  std::string target_img_path = "../../demo_imgs/demo_img1.jpg";
 
   cv::Mat color_img = cv::imread(target_img_path);
 
