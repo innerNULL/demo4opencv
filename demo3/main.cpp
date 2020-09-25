@@ -90,6 +90,37 @@ void equalize_histogram_callback(int state, void* input_data) {
 
 
 void lomography_effect_callback(int state, void* input_data) {
+  cv::Mat result;
+  ((cv::Mat*)input_data)->copyTo(result);
+  const double exponential_e = std::exp(1.0);
+  cv::Mat lookup_table(1, 256, CV_8UC1);
+  std::vector<cv::Mat> bgr_channels;
+  cv::split(*(cv::Mat*)input_data, bgr_channels);
+  cv::Mat* target_channel = &bgr_channels[2];
+
+  for (int32_t i = 0; i < 256; ++i) {
+    float x = (float)i / 256.0;
+    lookup_table.at<uchar>(i) = cvRound( 256 * (1 / (1 + pow(exponential_e, -(x - 0.5) / 0.1) )) );
+  }
+
+  cv::LUT(*target_channel, lookup_table, *target_channel);
+  cv::merge(bgr_channels, result);
+
+  // Create image with halo dark effective
+  cv::Mat halo_img(result.rows, result.cols, CV_32FC3, cv::Scalar(0.3, 0.3, 0.3));
+  // Create circle
+  cv::circle(halo_img, cv::Point(halo_img.rows / 2, halo_img.cols / 2), halo_img.cols / 3, 
+      cv::Scalar(1, 1, 1), -1);
+  cv::blur(halo_img, halo_img, cv::Size(halo_img.cols / 3, halo_img.cols / 3));
+  // Convert `result` to float form.
+  cv::Mat float_result;
+  result.convertTo(float_result, CV_32FC3);
+  // Multiply `float_result` with halo effect.
+  cv::multiply(float_result, halo_img, float_result);
+  // Convert back.
+  float_result.convertTo(result, CV_8UC3);
+
+  cv::imshow("img", result);
   return;
 }
 
